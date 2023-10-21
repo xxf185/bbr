@@ -363,7 +363,7 @@ echo " Kernel  : $kern"
 echo "----------------------------------------"
 echo " Automatically enable TCP BBR script"
 echo
-echo " URL: https://teddysun.com/489.html"
+echo 
 echo "----------------------------------------"
 echo
 echo "Press any key to start...or Press Ctrl+C to cancel"
