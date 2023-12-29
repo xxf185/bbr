@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 #
-# Auto install latest kernel for TCP BBR
+# 自动安装 TCP BBR 的最新内核
 #
-# System Required:  CentOS 6+, Debian8+, Ubuntu16+
+# 系统要求：CentOS 6+、Debian8+、Ubuntu16+
 #
 # Copyright (C) 2016-2021 Teddysun <i@teddysun.com>
 #
-# URL: https://teddysun.com/489.html
+# URL: https://github.com/xxf185/bbr
 #
 
 cur_dir="$(cd -P -- "$(dirname -- "$0")" && pwd -P)"
@@ -77,7 +77,7 @@ _error_detect() {
     _info "${cmd}"
     eval ${cmd}
     if [ $? -ne 0 ]; then
-        _error "Execution command (${cmd}) failed, please check it and try again."
+        _error "执行命令(${cmd})失败，请检查后重试。"
     fi
 }
 
@@ -291,7 +291,7 @@ install_kernel() {
                         rpm_kernel_name="kernel-ml-5.15.60-1.el7.x86_64.rpm"
                         rpm_kernel_devel_name="kernel-ml-devel-5.15.60-1.el7.x86_64.rpm"
                     else
-                        _error "Not supported architecture, please change to 64-bit architecture."
+                        _error "不支持的架构，请更换为64位架构。"
                     fi
                     _error_detect "wget -c -t3 -T60 -O ${rpm_kernel_name} ${rpm_kernel_url}${rpm_kernel_name}"
                     _error_detect "wget -c -t3 -T60 -O ${rpm_kernel_devel_name} ${rpm_kernel_url}${rpm_kernel_devel_name}"
@@ -320,12 +320,12 @@ install_kernel() {
 
 reboot_os() {
     echo
-    _info "The system needs to reboot."
-    read -p "Do you want to restart system? [y/n]" is_reboot
+    _info "系统需要重新启动。"
+    read -p "是否要重新启动系统? [y/n]" is_reboot
     if [[ ${is_reboot} == "y" || ${is_reboot} == "Y" ]]; then
         reboot
     else
-        _info "Reboot has been canceled..."
+        _info "重启已取消..."
         exit 0
     fi
 }
@@ -333,14 +333,14 @@ reboot_os() {
 install_bbr() {
     if check_bbr_status; then
         echo
-        _info "TCP BBR has already been enabled. nothing to do..."
+        _info "TCP BBR 已启用"
         exit 0
     fi
     if check_kernel_version; then
         echo
-        _info "The kernel version is greater than 4.9, directly setting TCP BBR..."
+        _info "内核版本大于4.9，直接设置TCP BBR..."
         sysctl_config
-        _info "Setting TCP BBR completed..."
+        _info "TCP BBR 设置完成..."
         exit 0
     fi
     check_os
@@ -349,24 +349,24 @@ install_bbr() {
     reboot_os
 }
 
-[[ $EUID -ne 0 ]] && _error "This script must be run as root"
+[[ $EUID -ne 0 ]] && _error "该脚本必须以 root 身份运行"
 opsy=$( _os_full )
 arch=$( uname -m )
 lbit=$( getconf LONG_BIT )
 kern=$( uname -r )
 
 clear
-echo "---------- System Information ----------"
-echo " OS      : $opsy"
-echo " Arch    : $arch ($lbit Bit)"
-echo " Kernel  : $kern"
+echo "---------- 系统信息 ----------"
+echo " 操作系统 : $opsy"
+echo " 架构     : $arch ($lbit Bit)"
+echo " 核心     : $kern"
 echo "----------------------------------------"
-echo " Automatically enable TCP BBR script"
+echo " 自动启用 TCP BBR 脚本"
 echo
-echo " URL: https://teddysun.com/489.html"
+echo " URL: https://github.com/xxf185/bbr"
 echo "----------------------------------------"
 echo
-echo "Press any key to start...or Press Ctrl+C to cancel"
+echo "按任意键开始...或按 Ctrl+C 取消"
 char=$(get_char)
 
 install_bbr 2>&1 | tee ${cur_dir}/install_bbr.log
