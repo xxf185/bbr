@@ -6,7 +6,7 @@
 #
 # Copyright (C) 2016-2021 Teddysun <i@teddysun.com>
 #
-# 
+# URL: https://teddysun.com/489.html
 #
 
 cur_dir="$(cd -P -- "$(dirname -- "$0")" && pwd -P)"
@@ -77,7 +77,7 @@ _error_detect() {
     _info "${cmd}"
     eval ${cmd}
     if [ $? -ne 0 ]; then
-        _error "执行命令(${cmd}) 失败，请检查并重试。"
+        _error "Execution command (${cmd}) failed, please check it and try again."
     fi
 }
 
@@ -303,7 +303,7 @@ install_kernel() {
             fi
             ;;
         ubuntu|debian)
-            _info "正在获取最新的内核版本..."
+            _info "Getting latest kernel version..."
             get_latest_version
             if [ -n "${modules_deb_name}" ]; then
                 _error_detect "wget -c -t3 -T60 -O ${deb_kernel_modules_name} ${deb_kernel_modules_url}"
@@ -320,8 +320,8 @@ install_kernel() {
 
 reboot_os() {
     echo
-    _info "系统需要重新启动。"
-    read -p "是否要重新启动系统? [y/n]" is_reboot
+    _info "The system needs to reboot."
+    read -p "Do you want to restart system? [y/n]" is_reboot
     if [[ ${is_reboot} == "y" || ${is_reboot} == "Y" ]]; then
         reboot
     else
@@ -333,14 +333,14 @@ reboot_os() {
 install_bbr() {
     if check_bbr_status; then
         echo
-        _info "TCP BBR 已启用"
+        _info "TCP BBR has already been enabled. nothing to do..."
         exit 0
     fi
     if check_kernel_version; then
         echo
-        _info "内核版本大于4.9，直接设置TCP BBR..."
+        _info "The kernel version is greater than 4.9, directly setting TCP BBR..."
         sysctl_config
-        _info "TCP BBR 设置完成..."
+        _info "Setting TCP BBR completed..."
         exit 0
     fi
     check_os
@@ -349,24 +349,24 @@ install_bbr() {
     reboot_os
 }
 
-[[ $EUID -ne 0 ]] && _error "该脚本必须以 root 身份运行"
+[[ $EUID -ne 0 ]] && _error "This script must be run as root"
 opsy=$( _os_full )
 arch=$( uname -m )
 lbit=$( getconf LONG_BIT )
 kern=$( uname -r )
 
 clear
-echo "---------- 系统信息 ----------"
-echo "操作系统 : $opsy"
-echo " 架构    : $arch ($lbit Bit)"
-echo " 核心    : $kern"
+echo "---------- System Information ----------"
+echo " OS      : $opsy"
+echo " Arch    : $arch ($lbit Bit)"
+echo " Kernel  : $kern"
 echo "----------------------------------------"
-echo " 自动启用 TCP BBR 脚本"
+echo " Automatically enable TCP BBR script"
 echo
-echo 
+echo " URL: https://teddysun.com/489.html"
 echo "----------------------------------------"
 echo
-echo "按任意键开始...或按 Ctrl+C 取消"
+echo "Press any key to start...or Press Ctrl+C to cancel"
 char=$(get_char)
 
 install_bbr 2>&1 | tee ${cur_dir}/install_bbr.log
