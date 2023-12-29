@@ -60,7 +60,7 @@ check_github() {
     sleep 5
   else
     # 所有域名均可访问，打印成功提示
-    echo "${Green_font_prefix}github可访问${Font_color_suffix}，继续执行脚本..."
+    echo "github可访问.继续执行脚本"
   fi
 }
 
